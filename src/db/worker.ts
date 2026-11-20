@@ -6,9 +6,36 @@ import * as repo from './repo';
 import { migrate } from './schema';
 import type { SqlDb, SqlValue } from './types';
 
+type Sqlite3 = Awaited<ReturnType<typeof sqlite3InitModule>>;
+
+/**
+ * Safari can refuse the storage file handles on the first attempt (for example right after
+ * the previous page or worker closed) and grant them a moment later, so retry a few times.
+ * preserveOnInitFailure is essential: without it a failed attempt deletes the stored data.
+ */
+async function installPool(sqlite3: Sqlite3) {
+  let lastError: unknown;
+  for (let attempt = 0; attempt < 8; attempt++) {
+    try {
+      // forceReinitIfPreviouslyFailed is supported by the library but missing from its typings.
+      const options = {
+        name: 'zorro',
+        preserveOnInitFailure: true,
+        forceReinitIfPreviouslyFailed: true,
+      };
+      return await sqlite3.installOpfsSAHPoolVfs(options);
+    } catch (e) {
+      lastError = e;
+      await new Promise((resolve) => setTimeout(resolve, 250 * (attempt + 1)));
+    }
+  }
+  const e = lastError as { name?: string; message?: string };
+  throw new Error(`${e?.name ?? 'Error'}: ${e?.message ?? String(lastError)}`);
+}
+
 async function open(): Promise<SqlDb> {
   const sqlite3 = await sqlite3InitModule();
-  const pool = await sqlite3.installOpfsSAHPoolVfs({ name: 'zorro' });
+  const pool = await installPool(sqlite3);
   const raw = new pool.OpfsSAHPoolDb('/zorro.db');
   const db: SqlDb = {
     all: (sql, bind?: SqlValue[]) => raw.selectObjects(sql, bind),
