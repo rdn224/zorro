@@ -72,16 +72,17 @@ export default function OrderForm(props: { nav: Nav; customerId: number; repeat?
           const n = qty[p.id] ?? 0;
           return (
             <div key={p.id} className={n ? 'card product selected' : 'card product'}>
-              <div className="product-info">
+              <span className={`icon ${p.category}`}>{p.category === 'pizza' ? '🍕' : '🥤'}</span>
+              <div className="product-info grow">
                 <b>{p.name}</b>
-                <span className="muted">{money(p.price)}</span>
+                <span className="price">{money(p.price)}</span>
               </div>
               <div className="stepper">
                 <button onClick={() => change(p.id, -1)} disabled={!n} aria-label="Хасах">
                   −
                 </button>
                 <span>{n}</span>
-                <button onClick={() => change(p.id, 1)} aria-label="Нэмэх">
+                <button className="plus" onClick={() => change(p.id, 1)} aria-label="Нэмэх">
                   ＋
                 </button>
               </div>
@@ -110,8 +111,8 @@ export default function OrderForm(props: { nav: Nav; customerId: number; repeat?
         {products.length === 0 && (
           <p className="empty">Цэс хоосон байна. Эхлээд «Цэс» табаас пицца, ундаагаа бүртгээрэй.</p>
         )}
-        {group('pizza', 'Пицца')}
-        {group('drink', 'Ундаа')}
+        {group('pizza', '🍕 Пицца')}
+        {group('drink', '🥤 Ундаа')}
         {products.length > 0 && (
           <label className="form">
             Тэмдэглэл

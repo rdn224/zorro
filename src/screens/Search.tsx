@@ -1,4 +1,5 @@
 import type { Nav } from '../App';
+import Avatar from '../components/Avatar';
 import { api } from '../db/client';
 import { dateTime } from '../lib/format';
 import { useQuery } from '../lib/hooks';
@@ -22,6 +23,9 @@ export default function Search(props: { nav: Nav; query: string; setQuery: (q: s
 
   return (
     <main className="screen">
+      <div className="hero">
+        <div className="hero-title">Zorro 🍕</div>
+        <div className="hero-sub">Утасны дугаараар хэрэглэгчээ хайна</div>
       <div className="search-box">
         <input
           className="search-input"
@@ -42,6 +46,7 @@ export default function Search(props: { nav: Nav; query: string; setQuery: (q: s
             Буулгах
           </button>
         )}
+      </div>
       </div>
 
       {error && <p className="error">{error}</p>}
@@ -73,15 +78,18 @@ export default function Search(props: { nav: Nav; query: string; setQuery: (q: s
               className="card customer-row"
               onClick={() => nav.push({ name: 'customer', id: c.id })}
             >
-              <div className="row">
-                <b className="phone">{formatPhone(c.phone)}</b>
-                <span className="badge">{c.order_count} захиалга</span>
+              <Avatar id={c.id} name={c.name} />
+              <div className="grow">
+                <div className="row">
+                  <b className="phone">{formatPhone(c.phone)}</b>
+                  <span className="badge">{c.order_count} захиалга</span>
+                </div>
+                <div>{c.name || 'Нэргүй'}</div>
+                {c.address && <div className="muted clamp">📍 {c.address}</div>}
+                {c.last_order_at && (
+                  <div className="muted small">Сүүлд: {dateTime(c.last_order_at)}</div>
+                )}
               </div>
-              <div>{c.name || 'Нэргүй'}</div>
-              {c.address && <div className="muted clamp">{c.address}</div>}
-              {c.last_order_at && (
-                <div className="muted small">Сүүлд: {dateTime(c.last_order_at)}</div>
-              )}
             </button>
           ))}
         </>

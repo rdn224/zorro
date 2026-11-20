@@ -1,4 +1,5 @@
 import type { Nav } from '../App';
+import Avatar from '../components/Avatar';
 import Header from '../components/Header';
 import OrderCard from '../components/OrderCard';
 import { api } from '../db/client';
@@ -40,35 +41,42 @@ export default function CustomerScreen(props: { nav: Nav; id: number }) {
         }
       />
       <main className="screen">
-        <div className="card profile">
-          <div className="name">{customer.name || 'Нэргүй'}</div>
-          <a className="phone big" href={`tel:${customer.phone}`}>
-            📞 {formatPhone(customer.phone)}
-          </a>
-          {customer.phone2 && (
-            <a className="phone" href={`tel:${customer.phone2}`}>
-              📞 {formatPhone(customer.phone2)}
+        <div className="profile-hero">
+          <Avatar id={customer.id} name={customer.name} large />
+          <div className="grow">
+            <div className="name">{customer.name || 'Нэргүй'}</div>
+            <a className="phone big" href={`tel:${customer.phone}`}>
+              📞 {formatPhone(customer.phone)}
             </a>
-          )}
+            {customer.phone2 && (
+              <a className="phone" href={`tel:${customer.phone2}`}>
+                📞 {formatPhone(customer.phone2)}
+              </a>
+            )}
+          </div>
+        </div>
+
+        <div className="card profile">
           <div className="field">
-            <span className="label">Хаяг</span>
+            <span className="label">📍 Хаяг</span>
             <span className="address">{customer.address || '—'}</span>
           </div>
           {customer.note && (
             <div className="field">
-              <span className="label">Тэмдэглэл</span>
+              <span className="label">📝 Тэмдэглэл</span>
               <span>{customer.note}</span>
             </div>
           )}
-          <div className="stats">
-            <div>
-              <b>{customer.order_count}</b>
-              <span>захиалга</span>
-            </div>
-            <div>
-              <b>{money(customer.total_spent)}</b>
-              <span>нийт дүн</span>
-            </div>
+        </div>
+
+        <div className="tiles">
+          <div className="tile violet">
+            <b>{customer.order_count}</b>
+            <span>захиалга</span>
+          </div>
+          <div className="tile green">
+            <b>{money(customer.total_spent)}</b>
+            <span>нийт дүн</span>
           </div>
         </div>
 

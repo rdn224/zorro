@@ -48,8 +48,11 @@ export default function MenuScreen() {
             className={p.active ? 'card product' : 'card product inactive'}
             onClick={() => edit(p)}
           >
-            <b>{p.name}</b>
-            <span className="muted">{p.active ? money(p.price) : 'Идэвхгүй'}</span>
+            <span className={`icon ${p.category}`}>{p.category === 'pizza' ? '🍕' : '🥤'}</span>
+            <b className="grow">{p.name}</b>
+            <span className={p.active ? 'price' : 'muted'}>
+              {p.active ? money(p.price) : 'Идэвхгүй'}
+            </span>
           </button>
         ))}
     </>
@@ -58,8 +61,8 @@ export default function MenuScreen() {
   return (
     <main className="screen">
       {loadError && <p className="error">{loadError}</p>}
-      {group('pizza', 'Пицца')}
-      {group('drink', 'Ундаа')}
+      {group('pizza', '🍕 Пицца')}
+      {group('drink', '🥤 Ундаа')}
 
       {draft && (
         <div className="sheet-backdrop" onClick={() => setDraft(null)}>

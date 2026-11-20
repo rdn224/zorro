@@ -27,12 +27,12 @@ export default function ReportScreen(props: { nav: Nav }) {
       {error && <p className="error">{error}</p>}
       {data && (
         <>
-          <div className="card stats">
-            <div>
+          <div className="tiles">
+            <div className="tile violet">
               <b>{data.count}</b>
               <span>захиалга</span>
             </div>
-            <div>
+            <div className="tile green">
               <b>{money(data.total)}</b>
               <span>борлуулалт</span>
             </div>
@@ -43,13 +43,18 @@ export default function ReportScreen(props: { nav: Nav }) {
             <p className="empty">Энэ хугацаанд захиалга алга.</p>
           ) : (
             <div className="card">
-              <ul className="items">
+              <ul className="items ranks">
                 {data.top.map((t) => (
                   <li key={t.name}>
-                    <span>{t.name}</span>
-                    <span className="qty">
-                      ×{t.qty} · {money(t.total)}
-                    </span>
+                    <div className="row">
+                      <span>{t.name}</span>
+                      <span className="qty">
+                        ×{t.qty} · {money(t.total)}
+                      </span>
+                    </div>
+                    <div className="bar">
+                      <i style={{ width: `${(t.qty / data.top[0].qty) * 100}%` }} />
+                    </div>
                   </li>
                 ))}
               </ul>
